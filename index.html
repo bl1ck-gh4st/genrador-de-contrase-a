@@ -1,0 +1,242 @@
+ <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>Generador de Contraseñas</title>
+        <link rel="stylesheet" href="style.css">
+        <style>
+        body {
+  
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          background-size: cover;
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f5f5f5;
+        
+        }
+        
+        #matrix {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 1000%;
+          height: 1000%;
+          z-index: 0;
+        }
+        
+        .my-background {
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+        
+        img {
+          width: 150%;
+          height: auto;
+        }
+        
+        
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #35794c00;
+          border-radius: 6in;
+          box-shadow: -3px -2px 4px 40px rgb(9, 255, 0);
+        }
+        
+        h1 {
+        
+          font-size: 24px;
+          margin-bottom: 15px;
+          color: white;
+          text-shadow: 0 0 10px white, 0 0 20px white;
+        
+        }
+        
+        .hola{
+          color: white;
+          text-shadow: 0 0 10px white, 0 0 20px white 
+        }
+        
+        form {
+          margin-bottom: 15px;
+        }
+        
+        label {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: bold;
+        }
+        
+        input[type="number"],
+        input[type="checkbox"] {
+          width: 90%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          margin-bottom: 10px;
+          border-radius: 5px;
+        }
+        
+        button {
+          background-color: #007bff;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        
+        .results {
+          padding: 10px;
+          background-color: #f0f0f0;
+          border-radius: 5px;
+        }
+        
+        #password {
+          font-size: 24px;
+          font-weight: bold;
+        }
+        
+        .container {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+        }
+        
+        /* Mejoras de diseño para los campos de entrada y el botón */
+        input[type="number"],
+        input[type="checkbox"],
+        button {
+          /* ... Tus estilos ... */
+          transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+        
+        input[type="number"]:focus,
+        input[type="checkbox"]:focus,
+        button:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
+        }
+        
+        button:hover {
+          background-color: #0056b3;
+          transform: scale(1.05);
+        }
+        
+        /* Estilos para el cuadro de resultados */
+        .results {
+          /* ... Tus estilos ... */
+          text-align: center;
+          display: none;
+          margin-top: 20px;
+        }
+        </style>
+      </head>
+      <body>
+        <div id="matrix"></div>
+        <div class="container">
+          <h1 >Generador de Contraseñas</h1>
+          <form action="#">
+            <input type="number" name="length" placeholder="Longitud de la Contraseña" min="8" max="1000" value="12">
+          
+            <input type="checkbox" name="include-symbols"  value="true"><b class="hola">Incluir Símbolos</b>
+            <input type="submit" value="Generar Contraseña">
+          </form>
+          <div class="results">
+            <p>Tu contraseña es: <b id="password"></b></p>
+          </div>
+        </div>
+
+        <script>
+            // Obtener los elementos del formulario
+    const lengthInput = document.querySelector("input[name=length]");
+    const includeSymbolsCheckbox = document.querySelector("input[name=include-symbols]");
+    const resultsDiv = document.querySelector(".results");
+    
+    // Generar una contraseña
+    function generatePassword() {
+      // Obtener la longitud de la contraseña
+      let length = Number(lengthInput.value);
+    
+      // Asegurarse de que la longitud esté dentro del rango deseado (8 a 128)
+      length = Math.max(8, Math.min(length, 1000));
+    
+      // Crear un arreglo de caracteres
+      const characters = [];
+      if (includeSymbolsCheckbox.checked) {
+        characters.push("!@#$%^&*()-_+={}[]|\\;:'\",.<>/?");
+      }
+      characters.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+      characters.push("abcdefghijklmnopqrstuvwxyz");
+      characters.push("0123456789");
+    
+      // Generar una contraseña aleatoria
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        const randomCharacterSet = characters[Math.floor(Math.random() * characters.length)];
+        const randomCharacter = randomCharacterSet[Math.floor(Math.random() * randomCharacterSet.length)];
+        password += randomCharacter;
+      }
+    
+      // Establecer la contraseña en el div de resultados
+      resultsDiv.querySelector("#password").textContent = password;
+    
+      // Mostrar el cuadro de resultados
+      resultsDiv.style.display = "block";
+    }
+    
+    // Escuchar el evento de envío del formulario
+    document.querySelector("form").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevenir el envío del formulario
+      generatePassword();
+    });
+
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+document.getElementById('matrix').appendChild(canvas);
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const columns = canvas.width / 20;
+const drops = Array.from({ length: columns }).fill(1);
+
+function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0F0';
+    ctx.font = '20px monospace';
+
+    drops.forEach((y, x) => {
+        const text = Math.random() > 0.5 ? '0' : '1';
+        ctx.fillText(text, x * 20, y * 20);
+
+        if (y * 20 > canvas.height && Math.random() > 0.975) {
+            drops[x] = 0;
+        }
+
+        drops[x]++;
+    });
+}
+
+setInterval(draw, 50);
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drops.length = canvas.width / 20;
+    drops.fill(1);
+});
+
+        </script>
+      </body>
+      </html>
